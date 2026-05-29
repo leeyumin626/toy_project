@@ -20,7 +20,7 @@
 
     <h1>{{ test.title }}</h1>
     <p>
-        {{ test.course.subject }} | {{ test.user.username }} | 
+        {{ test.course.subject }} | 
         {{ test.user.grade }}학년 | {{ test.created_at|date:"Y.m.d H:i" }} | 조회 {{ test.views }}
     </p>
 
@@ -48,8 +48,24 @@
     <hr>
 
     <p>
-        <a href="{% url 'TestBack:test_like' test.pk %}">❤️ 좋아요 {{ test.likes.count }}</a> | 
-        <a href="{% url 'TestBack:test_scrap' test.pk %}">📁 스크랩 {{ test.scraps.count }}</a>
+        {% if user.is_authenticated %}
+            {% if user in test.likes.all %}
+                <a href="{% url 'TestBack:test_like' test.pk %}" style="text-decoration: none;">❤️ 좋아요 취소 {{ test.likes.count }}</a>
+            {% else %}
+                <a href="{% url 'TestBack:test_like' test.pk %}" style="text-decoration: none;">💔 좋아요 {{ test.likes.count }}</a>
+            {% endif %}
+            
+            | 
+            
+            {% if user in test.scraps.all %}
+                <a href="{% url 'TestBack:test_scrap' test.pk %}" style="text-decoration: none;">📁 스크랩 취소 {{ test.scraps.count }}</a>
+            {% else %}
+                <a href="{% url 'TestBack:test_scrap' test.pk %}" style="text-decoration: none;">📁 스크랩 {{ test.scraps.count }}</a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'TestBack:test_like' test.pk %}" style="text-decoration: none;">💔 좋아요 {{ test.likes.count }}</a> | 
+            <a href="{% url 'TestBack:test_scrap' test.pk %}" style="text-decoration: none;">📁 스크랩 {{ test.scraps.count }}</a>
+        {% endif %}
     </p>
 
     <hr>
@@ -73,7 +89,6 @@
     {% for comment in test.comments.all %}
         {% if comment.parent is None %}
             <div>
-                <!-- 댓글 작성자 및 시간 -->
                 <p>
                     {% if comment.is_anonymous %}
                         익명{{ comment.get_anonymous_number }}
@@ -94,7 +109,6 @@
                     <a href="{% url 'TestBack:comment_like' comment.id %}">👍 {{ comment.likes.count }}</a>
                 </p>
 
-                <!-- 대댓글 목록 -->
                 {% for reply in comment.replies.all %}
                     <div style="margin-left: 30px;">
                         <p>
@@ -119,7 +133,6 @@
                     </div>
                 {% endfor %}
 
-                <!-- 대댓글 입력창: 댓글 바로 아래 항상 표시 -->
                 {% if user.is_authenticated %}
                     <form action="{% url 'TestBack:comment_create' test.pk %}" method="post" style="margin-left: 30px;">
                         {% csrf_token %}
@@ -136,7 +149,6 @@
         <p>첫 댓글을 남겨주세요.</p>
     {% endfor %}
 
-    <!-- 댓글 입력창 -->
     {% if user.is_authenticated %}
         <form action="{% url 'TestBack:comment_create' test.pk %}" method="post">
             {% csrf_token %}

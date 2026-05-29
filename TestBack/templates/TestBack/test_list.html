@@ -72,23 +72,20 @@
             </tbody>
         </table>
 
+        {% if page_obj.paginator.num_pages > 1 %}
         <p>
             {% if page_obj.has_previous %}
-            <a
-                href="?page={{ page_obj.previous_page_number }}&sort={{ sort }}&search={{ search_keyword }}"
-                >이전</a
-            >
-            {% endif %} {% for num in page_obj.paginator.page_range %}
-            <a
-                href="?page={{ num }}&sort={{ sort }}&search={{ search_keyword }}"
-                >{{ num }}</a
-            >
-            {% endfor %} {% if page_obj.has_next %}
-            <a
-                href="?page={{ page_obj.next_page_number }}&sort={{ sort }}&search={{ search_keyword }}"
-                >다음</a
-            >
+            <a href="?page={{ page_obj.previous_page_number }}&sort={{ sort }}&search={{ search_keyword }}">이전</a>
+            {% endif %} 
+
+            {% for num in page_obj.paginator.page_range %}
+            <a href="?page={{ num }}&sort={{ sort }}&search={{ search_keyword }}">{{ num }}</a>
+            {% endfor %} 
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&sort={{ sort }}&search={{ search_keyword }}">다음</a>
             {% endif %}
         </p>
+        {% endif %}
     </body>
 </html>
