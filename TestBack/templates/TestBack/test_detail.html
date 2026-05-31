@@ -201,7 +201,9 @@
                         <span>조회 {{ my_post.views }}</span>
                     </div>
                 </div>
-                <img class="aside-arrow" src="{% static 'img/aside_arrow.svg' %}" alt="화살표">
+                <a href="{% url 'TestBack:test_detail' my_post.pk %}">
+                    <img class="aside-arrow" src="{% static 'img/aside_arrow.svg' %}" alt="화살표">
+                </a>
             </div>
             
             {% empty %}
